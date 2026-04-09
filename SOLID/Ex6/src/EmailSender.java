@@ -1,12 +1,16 @@
 public class EmailSender extends NotificationSender {
-    public EmailSender(AuditLog audit) { super(audit); }
+    private final String to;
+    private final String subject;
+
+    public EmailSender(AuditLog audit, String to, String subject) {
+        super(audit);
+        this.to = to;
+        this.subject = subject;
+    }
 
     @Override
-    public void send(Notification n) {
-        // LSP smell: truncates silently, changing meaning
-        String body = n.body;
-        if (body.length() > 40) body = body.substring(0, 40);
-        System.out.println("EMAIL -> to=" + n.email + " subject=" + n.subject + " body=" + body);
+    public void send(String payload) {
+        System.out.println("EMAIL -> to=" + to + " subject=" + subject + " body=" + payload);
         audit.add("email sent");
     }
 }
