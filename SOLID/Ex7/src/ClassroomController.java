@@ -4,24 +4,27 @@ public class ClassroomController {
     public ClassroomController(DeviceRegistry reg) { this.reg = reg; }
 
     public void startClass() {
-        SmartClassroomDevice pj = reg.getFirstOfType("Projector");
-        pj.powerOn();
-        pj.connectInput("HDMI-1");
+        for (PowerControl p : reg.getAllOfCapability(PowerControl.class)) {
+            p.powerOn();
+        }
 
-        SmartClassroomDevice lights = reg.getFirstOfType("LightsPanel");
+        InputControl input = reg.getFirstOfCapability(InputControl.class);
+        input.connectInput("HDMI-1");
+
+        BrightnessControl lights = reg.getFirstOfCapability(BrightnessControl.class);
         lights.setBrightness(60);
 
-        SmartClassroomDevice ac = reg.getFirstOfType("AirConditioner");
+        TemperatureControl ac = reg.getFirstOfCapability(TemperatureControl.class);
         ac.setTemperatureC(24);
 
-        SmartClassroomDevice scan = reg.getFirstOfType("AttendanceScanner");
+        ScanningControl scan = reg.getFirstOfCapability(ScanningControl.class);
         System.out.println("Attendance scanned: present=" + scan.scanAttendance());
     }
 
     public void endClass() {
         System.out.println("Shutdown sequence:");
-        reg.getFirstOfType("Projector").powerOff();
-        reg.getFirstOfType("LightsPanel").powerOff();
-        reg.getFirstOfType("AirConditioner").powerOff();
+        for (PowerControl p : reg.getAllOfCapability(PowerControl.class)) {
+            p.powerOff();
+        }
     }
 }
