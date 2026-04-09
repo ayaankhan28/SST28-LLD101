@@ -1,8 +1,20 @@
+import java.util.List;
+import java.util.Arrays;
+
 public class Main {
     public static void main(String[] args) {
         System.out.println("=== Placement Eligibility ===");
         StudentProfile s = new StudentProfile("23BCS1001", "Ayaan", 8.10, 72, 18, LegacyFlags.NONE);
-        EligibilityEngine engine = new EligibilityEngine(new FakeEligibilityStore());
+        
+        RuleInput config = new RuleInput();
+        List<EligibilityRule> rules = Arrays.asList(
+            new DisciplinaryFlagRule(),
+            new CGRRule(config),
+            new AttendanceRule(config),
+            new CreditsRule(config)
+        );
+        
+        EligibilityEngine engine = new EligibilityEngine(new FakeEligibilityStore(), rules);
         engine.runAndPrint(s);
     }
 }
